@@ -10,7 +10,7 @@ defmodule Imgproxy.MixProject do
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      description: description(),
+      description: "imgproxy URL generator and helper functions",
       package: package(),
       source_url: "https://github.com/bmuller/imgproxy",
       docs: [
@@ -43,12 +43,6 @@ defmodule Imgproxy.MixProject do
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/bmuller/imgproxy"}
     ]
-  end
-
-  def description do
-    """
-    This is a description
-    """
   end
 
   # Run "mix help compile.app" to learn about applications.

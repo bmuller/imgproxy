@@ -1,5 +1,6 @@
 # Imgproxy
 [![Build Status](https://secure.travis-ci.org/bmuller/imgproxy.png?branch=master)](https://travis-ci.org/bmuller/imgproxy)
+[![Hex pm](http://img.shields.io/hexpm/v/imgproxy.svg?style=flat)](https://hex.pm/packages/imgproxy)
 
 Imgproxy is an Elixir library that helps generate [imgproxy](https://github.com/DarthSim/imgproxy) URLs.  Before using this library, you should have a running imgproxy server.
 
