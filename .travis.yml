@@ -1,0 +1,4 @@
+language: elixir
+python:
+  - "1.8"
+  - "1.7"
