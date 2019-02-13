@@ -9,7 +9,8 @@ defmodule Mix.Tasks.Imgproxy.Gen.Secret do
   use Mix.Task
 
   def run([]) do
-    :crypto.strong_rand_bytes(64)
+    64
+    |> :crypto.strong_rand_bytes()
     |> Base.encode16(case: :lower)
     |> Mix.Shell.IO.info()
   end

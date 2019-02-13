@@ -6,6 +6,7 @@ defmodule Imgproxy.MixProject do
   def project do
     [
       app: :imgproxy,
+      aliases: aliases(),
       version: @version,
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
@@ -27,6 +28,16 @@ defmodule Imgproxy.MixProject do
   defp extras do
     [
       "guides/overview.md"
+    ]
+  end
+
+  defp aliases do
+    [
+      test: [
+        "format --check-formatted",
+        "test",
+        "credo"
+      ]
     ]
   end
 
@@ -55,7 +66,8 @@ defmodule Imgproxy.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, "~> 0.18", only: :dev}
+      {:ex_doc, "~> 0.18", only: :dev},
+      {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false}
     ]
   end
 end
