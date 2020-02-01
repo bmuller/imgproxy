@@ -51,9 +51,8 @@ defmodule Imgproxy do
       "https://imgcdn.example.com/insecure/fill/100/150/sm/1/aHR0cHM6Ly9wbGFjZWtpdHRlbi5jb20vMjAwLzMwMA"
 
   """
-  def url(img_url, width, height) do
-    url(img_url, width: width, height: height)
-  end
+  def url(img_url, width, height),
+    do: url(img_url, width: width, height: height)
 
   @doc """
   Generate a path to an image based on the given image url and image options.
