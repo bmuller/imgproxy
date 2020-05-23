@@ -10,7 +10,7 @@ To install Imgproxy, just add an entry to your `mix.exs`:
 def deps do
   [
     # ...
-    {:imgproxy, "~> 0.1"}
+    {:imgproxy, "~> 1.0"}
   ]
 end
 ```
@@ -38,7 +38,7 @@ You can use the output as your key or salt (ideally, just run the command twice,
 
 ## Usage
 
-Usage is basically constrained to the `url` function, which accepts the original URL for an image and optional parameters for image conversion.
+Usage is basically constrained to the `Imgproxy.url/2` function, which accepts the original URL for an image and optional parameters for image conversion.
 
 Example:
 

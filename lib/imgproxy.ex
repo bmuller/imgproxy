@@ -7,8 +7,17 @@ defmodule Imgproxy do
   includes guides, API information for important modules, and links to useful resources.
   """
 
+  @type image_opts :: [
+          resize: String.t(),
+          width: integer(),
+          height: integer(),
+          gravity: String.t(),
+          enlarge: integer(),
+          extension: String.t()
+        ]
+
   @doc """
-  Generate an imgproxy URL.  The first arguemnt is the URL for the image, followed by optional parameters.
+  Generate an imgproxy URL.  The first argument is the URL for the image, followed by optional parameters.
 
   Those parameters and their defaults are:
 
@@ -34,6 +43,7 @@ defmodule Imgproxy do
       "https://imgcdn.example.com/insecure/fill/123/321/sm/1/aHR0cHM6Ly9wbGFjZWtpdHRlbi5jb20vMjAwLzMwMA.jpg"
 
   """
+  @spec url(img_url :: String.t(), opts :: image_opts) :: String.t()
   def url(img_url, opts \\ []) do
     prefix = Application.get_env(:imgproxy, :prefix, "")
     path = build_path(img_url, opts)
@@ -42,7 +52,7 @@ defmodule Imgproxy do
   end
 
   @doc """
-  Generate an imgproxy URL.  The first arguemnt is the URL for the image, followed by 
+  Generate an imgproxy URL.  The first argument is the URL for the image, followed by
   width and height.  All other parameters are generated using defaults.
 
   ## Examples
@@ -51,6 +61,7 @@ defmodule Imgproxy do
       "https://imgcdn.example.com/insecure/fill/100/150/sm/1/aHR0cHM6Ly9wbGFjZWtpdHRlbi5jb20vMjAwLzMwMA"
 
   """
+  @spec url(img_url :: String.t(), width :: integer, height :: integer) :: String.t()
   def url(img_url, width, height),
     do: url(img_url, width: width, height: height)
 
@@ -68,6 +79,7 @@ defmodule Imgproxy do
       iex> "https://imgcdn.example.com" <> "/insecure" <> partial_path
       "https://imgcdn.example.com/insecure/fill/300/300/sm/1/aHR0cHM6Ly9wbGFjZWtpdHRlbi5jb20vMjAwLzMwMA"
   """
+  @spec build_path(img_url :: String.t(), opts :: image_opts) :: String.t()
   def build_path(img_url, opts \\ []) do
     ext =
       if opts[:extension] do

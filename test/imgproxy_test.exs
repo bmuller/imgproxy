@@ -2,6 +2,8 @@ defmodule ImgproxyTest do
   use ExUnit.Case
   doctest Imgproxy
 
+  @img_url "http://example.com/image.gif"
+
   setup_all do
     Application.put_env(:imgproxy, :prefix, "https://imgcdn.example.com")
   end
@@ -14,7 +16,7 @@ defmodule ImgproxyTest do
 
   test "building paths with options" do
     path =
-      Imgproxy.build_path("http://example.com/image.gif",
+      Imgproxy.build_path(@img_url,
         resize: "fill",
         width: 123,
         height: 321,
@@ -27,13 +29,13 @@ defmodule ImgproxyTest do
   end
 
   test "building paths with no options" do
-    path = Imgproxy.build_path("http://example.com/image.gif")
+    path = Imgproxy.build_path(@img_url)
     assert path == "/fill/300/300/sm/1/aHR0cDovL2V4YW1wbGUuY29tL2ltYWdlLmdpZg"
   end
 
   test "generating unsigned urls" do
     url =
-      Imgproxy.url("http://example.com/image.gif",
+      Imgproxy.url(@img_url,
         resize: "fill",
         width: 123,
         height: 321,
@@ -45,7 +47,7 @@ defmodule ImgproxyTest do
     assert url ==
              "https://imgcdn.example.com/insecure/fill/123/321/sm/1/aHR0cDovL2V4YW1wbGUuY29tL2ltYWdlLmdpZg.jpg"
 
-    url = Imgproxy.url("http://example.com/image.gif")
+    url = Imgproxy.url(@img_url)
 
     assert url ==
              "https://imgcdn.example.com/insecure/fill/300/300/sm/1/aHR0cDovL2V4YW1wbGUuY29tL2ltYWdlLmdpZg"
@@ -56,7 +58,7 @@ defmodule ImgproxyTest do
     Application.put_env(:imgproxy, :salt, "aad703")
 
     url =
-      Imgproxy.url("http://example.com/image.gif",
+      Imgproxy.url(@img_url,
         resize: "fill",
         width: 123,
         height: 321,
@@ -68,7 +70,7 @@ defmodule ImgproxyTest do
     assert url ==
              "https://imgcdn.example.com/CA1v4B6CBOXeIkqrA0XtVBw6YqzwetOKHx3S60RWoJw/fill/123/321/sm/1/aHR0cDovL2V4YW1wbGUuY29tL2ltYWdlLmdpZg.jpg"
 
-    url = Imgproxy.url("http://example.com/image.gif")
+    url = Imgproxy.url(@img_url)
 
     assert url ==
              "https://imgcdn.example.com/tSqlg82gF_vEMIx9PBjPM_WmZrmypk6UdGJ_WEPsCAs/fill/300/300/sm/1/aHR0cDovL2V4YW1wbGUuY29tL2ltYWdlLmdpZg"

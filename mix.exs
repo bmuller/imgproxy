@@ -1,7 +1,7 @@
 defmodule Imgproxy.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "1.0.0"
 
   def project do
     [
@@ -19,8 +19,7 @@ defmodule Imgproxy.MixProject do
         source_ref: "v#{@version}",
         main: "overview",
         formatters: ["html", "epub"],
-        extras: extras(),
-        groups_for_extras: groups_for_extras()
+        extras: extras()
       ]
     ]
   end
@@ -41,18 +40,15 @@ defmodule Imgproxy.MixProject do
     ]
   end
 
-  defp groups_for_extras do
-    [
-      Introduction: ~r/guides\/introduction\/.*/
-    ]
-  end
-
   def package do
     [
       files: ["lib", "mix.exs", "README*", "LICENSE*"],
       maintainers: ["Brian Muller"],
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/bmuller/imgproxy"}
+      links: %{
+        "GitHub" => "https://github.com/bmuller/imgproxy",
+        "imgproxy Site" => "https://imgproxy.net"
+      }
     ]
   end
 
@@ -66,8 +62,8 @@ defmodule Imgproxy.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, "~> 0.21", only: :dev},
-      {:credo, "~> 1.0", only: [:dev, :test], runtime: false}
+      {:ex_doc, "~> 0.22", only: :dev},
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false}
     ]
   end
 end

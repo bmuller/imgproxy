@@ -13,7 +13,7 @@ To install Imgproxy, just add an entry to your `mix.exs`:
 def deps do
   [
     # ...
-    {:imgproxy, "~> 0.1"}
+    {:imgproxy, "~> 1.0"}
   ]
 end
 ```
