@@ -100,12 +100,12 @@ defmodule Imgproxy do
   end
 
   defp gen_signature(path) do
-    with {:ok, dkey} when not is_nil(dkey) <- Application.fetch_env(:imgproxy, :key),
-         {:ok, dsalt} when not is_nil(dsalt) <- Application.fetch_env(:imgproxy, :salt),
+    with {:ok, dkey} when is_binary(dkey) <- Application.fetch_env(:imgproxy, :key),
+         {:ok, dsalt} when is_binary(dsalt) <- Application.fetch_env(:imgproxy, :salt),
          key <- Base.decode16!(dkey, case: :lower),
          salt <- Base.decode16!(dsalt, case: :lower) do
-      :sha256
-      |> :crypto.hmac(key, salt <> path)
+      :hmac
+      |> :crypto.mac(:sha256, key, salt <> path)
       |> Base.url_encode64(padding: false)
     else
       _ -> "insecure"

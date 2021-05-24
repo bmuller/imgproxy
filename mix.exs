@@ -1,7 +1,8 @@
 defmodule Imgproxy.MixProject do
   use Mix.Project
 
-  @version "1.0.0"
+  @version "2.0.0"
+  @source_url "https://github.com/bmuller/imgproxy"
 
   def project do
     [
@@ -13,26 +14,26 @@ defmodule Imgproxy.MixProject do
       deps: deps(),
       description: "imgproxy URL generator and helper functions",
       package: package(),
-      source_url: "https://github.com/bmuller/imgproxy",
-      docs: [
-        extra_section: "GUIDES",
-        source_ref: "v#{@version}",
-        main: "overview",
-        formatters: ["html", "epub"],
-        extras: extras()
-      ]
+      source_url: @source_url,
+      docs: docs(),
+      preferred_cli_env: [test: :test, "ci.test": :test]
     ]
   end
 
-  defp extras do
+  defp docs do
     [
-      "guides/overview.md"
+      extra_section: "GUIDES",
+      source_ref: "v#{@version}",
+      source_url: @source_url,
+      main: "readme",
+      formatters: ["html"],
+      extras: ["README.md"]
     ]
   end
 
   defp aliases do
     [
-      test: [
+      "ci.test": [
         "format --check-formatted",
         "test",
         "credo"
@@ -62,8 +63,8 @@ defmodule Imgproxy.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, "~> 0.22", only: :dev},
-      {:credo, "~> 1.4", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.24", only: :dev}
     ]
   end
 end
