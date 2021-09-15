@@ -48,6 +48,7 @@ defmodule ImgProxy.MixProject do
       licenses: ["MIT"],
       links: %{
         "GitHub" => "https://github.com/bmuller/imgproxy",
+        "Changelog" => "https://github.com/bmuller/imgproxy/blob/master/CHANGELOG.md",
         "imgproxy Site" => "https://imgproxy.net"
       }
     ]
