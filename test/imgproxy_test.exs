@@ -3,76 +3,93 @@ defmodule ImgproxyTest do
   doctest Imgproxy
 
   @img_url "http://example.com/image.gif"
+  @img_url_encoded Base.url_encode64(@img_url, padding: false)
+  @prefix "https://imgcdn.example.com"
 
   setup_all do
-    Application.put_env(:imgproxy, :prefix, "https://imgcdn.example.com")
+    Application.put_env(:imgproxy, :prefix, @prefix)
   end
 
-  setup do
-    # these shouldn't be set for any tests beforehand
-    Application.delete_env(:imgproxy, :key)
-    Application.delete_env(:imgproxy, :salt)
+  describe "building unsigned urls should" do
+    test "support no processing options" do
+      result = @img_url |> Imgproxy.new() |> to_string()
+      assert result == "#{@prefix}/insecure/#{@img_url_encoded}"
+    end
+
+    test "support the resize option with arguments" do
+      result =
+        @img_url
+        |> Imgproxy.new()
+        |> Imgproxy.resize(123, 456, type: "fill", enlarge: true)
+        |> to_string()
+
+      assert result == "#{@prefix}/insecure/rs:fill:123:456:true/#{@img_url_encoded}"
+    end
+
+    test "support multiple options" do
+      result =
+        @img_url
+        |> Imgproxy.new()
+        |> Imgproxy.resize(123, 456, type: "fill", enlarge: true)
+        |> Imgproxy.set_gravity("sm")
+        |> to_string()
+
+      assert result == "#{@prefix}/insecure/g:sm/rs:fill:123:456:true/#{@img_url_encoded}"
+    end
+
+    test "support setting an extension" do
+      result = @img_url |> Imgproxy.new() |> Imgproxy.set_extension("png") |> to_string()
+      assert result == "#{@prefix}/insecure/#{@img_url_encoded}.png"
+
+      # now try with an unecessary dot
+      result = @img_url |> Imgproxy.new() |> Imgproxy.set_extension(".jpg") |> to_string()
+      assert result == "#{@prefix}/insecure/#{@img_url_encoded}.jpg"
+    end
   end
 
-  test "building paths with options" do
-    path =
-      Imgproxy.build_path(@img_url,
-        resize: "fill",
-        width: 123,
-        height: 321,
-        gravity: "sm",
-        enlarge: "1",
-        extension: "jpg"
+  describe "building signed urls should" do
+    setup do
+      Application.put_env(
+        :imgproxy,
+        :key,
+        "6b505d74dfaee5742f951abff4893ceb9e61b7a7dd52a462d6b2c641"
       )
 
-    assert path == "/fill/123/321/sm/1/aHR0cDovL2V4YW1wbGUuY29tL2ltYWdlLmdpZg.jpg"
-  end
+      Application.put_env(:imgproxy, :salt, "784b05d765951edaadc64130bf19750b0d")
 
-  test "building paths with no options" do
-    path = Imgproxy.build_path(@img_url)
-    assert path == "/fill/300/300/sm/1/aHR0cDovL2V4YW1wbGUuY29tL2ltYWdlLmdpZg"
-  end
+      on_exit(fn ->
+        Application.delete_env(:imgproxy, :key)
+        Application.delete_env(:imgproxy, :salt)
+      end)
+    end
 
-  test "generating unsigned urls" do
-    url =
-      Imgproxy.url(@img_url,
-        resize: "fill",
-        width: 123,
-        height: 321,
-        gravity: "sm",
-        enlarge: "1",
-        extension: "jpg"
-      )
+    test "support no processing options" do
+      result = @img_url |> Imgproxy.new() |> to_string()
+      signature = "F7xXm0-O-JVpBIz5Z9JvBGog19LgvTDT4y8dzIQ9H28"
+      assert result == "#{@prefix}/#{signature}/#{@img_url_encoded}"
+    end
 
-    assert url ==
-             "https://imgcdn.example.com/insecure/fill/123/321/sm/1/aHR0cDovL2V4YW1wbGUuY29tL2ltYWdlLmdpZg.jpg"
+    test "support the resize option with arguments" do
+      result =
+        @img_url
+        |> Imgproxy.new()
+        |> Imgproxy.resize(123, 456, type: "fill", enlarge: true)
+        |> to_string()
 
-    url = Imgproxy.url(@img_url)
+      signature = "o0xH0LYlMU7-2lCm4HqeahdxX0elC4AmnF6H0PKyiio"
+      assert result == "#{@prefix}/#{signature}/rs:fill:123:456:true/#{@img_url_encoded}"
+    end
 
-    assert url ==
-             "https://imgcdn.example.com/insecure/fill/300/300/sm/1/aHR0cDovL2V4YW1wbGUuY29tL2ltYWdlLmdpZg"
-  end
+    test "support multiple options" do
+      result =
+        @img_url
+        |> Imgproxy.new()
+        |> Imgproxy.resize(123, 456, type: "fill", enlarge: true)
+        |> Imgproxy.set_gravity("sm")
+        |> to_string()
 
-  test "generating signed urls" do
-    Application.put_env(:imgproxy, :key, "cdf104")
-    Application.put_env(:imgproxy, :salt, "aad703")
-
-    url =
-      Imgproxy.url(@img_url,
-        resize: "fill",
-        width: 123,
-        height: 321,
-        gravity: "sm",
-        enlarge: "1",
-        extension: "jpg"
-      )
-
-    assert url ==
-             "https://imgcdn.example.com/CA1v4B6CBOXeIkqrA0XtVBw6YqzwetOKHx3S60RWoJw/fill/123/321/sm/1/aHR0cDovL2V4YW1wbGUuY29tL2ltYWdlLmdpZg.jpg"
-
-    url = Imgproxy.url(@img_url)
-
-    assert url ==
-             "https://imgcdn.example.com/tSqlg82gF_vEMIx9PBjPM_WmZrmypk6UdGJ_WEPsCAs/fill/300/300/sm/1/aHR0cDovL2V4YW1wbGUuY29tL2ltYWdlLmdpZg"
+      signature = "SCMuOeSYIRAA1nxJbuuKXnvRBsW0X50xjhqJz_xSDf4"
+      assert result == "#{@prefix}/#{signature}/g:sm/rs:fill:123:456:true/#{@img_url_encoded}"
+    end
   end
 end

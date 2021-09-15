@@ -5,7 +5,7 @@
 
 Imgproxy is an Elixir library that helps generate [imgproxy](https://github.com/DarthSim/imgproxy) URLs.  Before using this library, you should have a running imgproxy server.
 
-**Note:** As of version 2.0, OTP version 22.1 or greater is required.
+**Note:** As of version 3.0, OTP >= 22.1 and imgproxy >= 2.0.0 are required.
 
 ## Installation
 
@@ -14,7 +14,7 @@ To install Imgproxy, just add an entry to your `mix.exs`:
 ``` elixir
 def deps do
   [
-    {:imgproxy, "~> 2.0"}
+    {:imgproxy, "~> 3.0"}
   ]
 end
 ```
@@ -32,7 +32,7 @@ config :imgproxy,
   salt: "aad7034f611b7fc28c6d344f72ea19secretsecret..."
 ```
 
-The `prefix` should be the location of the imgproxy server.  `key` and `salt` are only necessary if you are using [URL signatures](https://github.com/DarthSim/imgproxy/blob/master/docs/configuration.md#url-signature).  To generate the key a key and salt, you can use:
+The `prefix` should be the location of the imgproxy server.  `key` and `salt` are only necessary if you are using [URL signatures](https://docs.imgproxy.net/signing_the_url).  To generate the key a key and salt, you can use:
 
 ``` bash
 $> mix imgproxy.gen.secret
@@ -42,38 +42,28 @@ You can use the output as your key or salt (ideally, just run the command twice,
 
 ## Usage
 
-Usage is basically constrained to the `url` function, which accepts the original URL for an image and optional parameters for image conversion.
+Usage is simple - first generate an `Imgproxy` struct via `Imgproxy.new/1`, add any options you'd like, then convert to a string.
 
 Example:
 
-``` elixir
+```elixir
 # Generate URL for an image, using defaults
-Imgproxy.url("https://placekitten.com/200/300")
+Imgproxy.new("https://placekitten.com/200/300") |> to_string()
 
-# Set all parameters
-Imgproxy.url("https://placekitten.com/200/300",
-  resize: "fill",
-  width: 123,
-  height: 321,
-  gravity: "sm",
-  enlarge: "1",
-  extension: "jpg")
+# Resize to 123x321
+"https://placekitten.com/200/300"
+|> Imgproxy.new()
+|> Imgproxy.resize(123, 321, type: "fill")
+|> to_string()
 
-# Generate URL for an image with set width of 150 and
-# height of 200, and all other defaults.  This signature
-# is useful if you just want to set width/height.
-Imgproxy.url("https://placekitten.com/200/300", 150, 200)
+
+# Crop and return a jpg
+"https://placekitten.com/200/300"
+|> Imgproxy.new()
+|> Imgproxy.crop(100, 100)
+|> Imgproxy.set_extension("jpg")
+|> to_string()
 ```
-
-The optional parameters are:
-
-* [resize](https://github.com/DarthSim/imgproxy/blob/master/docs/generating_the_url_basic.md#resizing-types): default, "fill"
-* [width and height](https://github.com/DarthSim/imgproxy/blob/master/docs/generating_the_url_basic.md#width-and-height): default, 300x300 
-* [gravity](https://github.com/DarthSim/imgproxy/blob/master/docs/generating_the_url_basic.md#gravity): default, "sm" for smart.  `libvips` detects the most "interesting" section of the image and considers it as the center of the resulting image.
-* [enlarge](https://github.com/DarthSim/imgproxy/blob/master/docs/generating_the_url_basic.md#enlarge): default, "1"
-* [extension](https://github.com/DarthSim/imgproxy/blob/master/docs/generating_the_url_basic.md#extension): default, attempts to preserve the original image type
-
-The [imgproxy docs](https://github.com/DarthSim/imgproxy/blob/master/docs/generating_the_url_basic.md) have more details on what each of these options indicate.
 
 ## Running Tests
 

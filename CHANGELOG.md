@@ -1,3 +1,16 @@
+# Changelog for v3.x
+
+## v3.0.0 (2021-09-15)
+
+### Enhancements
+
+   * Support for [advanced URL generation](https://docs.imgproxy.net/generating_the_url_advanced?id=generating-the-url-advanced)
+
+### Hard-deprecations
+
+   * No support for imgproxy before version 2.0.0
+   * The `Imgproxy` library API has changed significantly and does not have any backward compatability before version 3.0.0
+
 # Changelog for v2.x
 
 ## v2.0.0 (2020-05-24)

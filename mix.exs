@@ -1,7 +1,7 @@
-defmodule Imgproxy.MixProject do
+defmodule ImgProxy.MixProject do
   use Mix.Project
 
-  @version "2.0.0"
+  @version "3.0.0"
   @source_url "https://github.com/bmuller/imgproxy"
 
   def project do
@@ -64,7 +64,7 @@ defmodule Imgproxy.MixProject do
   defp deps do
     [
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.24", only: :dev}
+      {:ex_doc, "~> 0.25", only: :dev}
     ]
   end
 end
