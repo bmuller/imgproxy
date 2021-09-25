@@ -1,4 +1,9 @@
-# Changelog for v3.x
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## v3.0.0 (2021-09-15)
 
@@ -9,9 +14,7 @@
 ### Hard-deprecations
 
    * No support for imgproxy before version 2.0.0
-   * The `Imgproxy` library API has changed significantly and does not have any backward compatability before version 3.0.0
-
-# Changelog for v2.x
+   * The `Imgproxy` library API has changed significantly and does not have any backward compatibility before version 3.0.0
 
 ## v2.0.0 (2020-05-24)
 
@@ -22,8 +25,6 @@
 ### Hard-deprecations
 
   * No OTP versions below 22 are supported.
-
-# Changelog for v1.x
 
 ## v1.0.0 (2020-05-23)
 

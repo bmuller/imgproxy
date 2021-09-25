@@ -51,6 +51,7 @@ defmodule Imgproxy do
       iex> img = Imgproxy.new("http://example.com/image.jpg")
       iex> Imgproxy.add_option(img, :padding, [10, 10, 10, 10]) |> to_string()
       "https://imgcdn.example.com/insecure/padding:10:10:10:10/aHR0cDovL2V4YW1wbGUuY29tL2ltYWdlLmpwZw"
+
   """
   @spec add_option(t(), atom(), list()) :: t()
   def add_option(%Imgproxy{options: opts} = img, name, args)
@@ -109,6 +110,7 @@ defmodule Imgproxy do
       iex> img = Imgproxy.new("http://example.com/image.jpg")
       iex> Imgproxy.set_extension(img, "png") |> to_string()
       "https://imgcdn.example.com/insecure/aHR0cDovL2V4YW1wbGUuY29tL2ltYWdlLmpwZw.png"
+
   """
   @spec set_extension(t(), String.t()) :: t()
   def set_extension(img, "." <> extension), do: set_extension(img, extension)
@@ -122,6 +124,7 @@ defmodule Imgproxy do
 
       iex> Imgproxy.to_string(Imgproxy.new("https://placekitten.com/200/300"))
       "https://imgcdn.example.com/insecure/aHR0cHM6Ly9wbGFjZWtpdHRlbi5jb20vMjAwLzMwMA"
+
   """
   @spec to_string(t()) :: String.t()
   defdelegate to_string(img), to: String.Chars.Imgproxy

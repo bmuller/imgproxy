@@ -1,11 +1,12 @@
 # Imgproxy
+
 [![Build Status](https://github.com/bmuller/imgproxy/actions/workflows/ci.yml/badge.svg)](https://github.com/bmuller/imgproxy/actions/workflows/ci.yml)
-[![Hex pm](http://img.shields.io/hexpm/v/imgproxy.svg?style=flat)](https://hex.pm/packages/imgproxy)
-[![API Docs](https://img.shields.io/badge/api-docs-lightgreen.svg?style=flat)](https://hexdocs.pm/imgproxy/)
+[![Module Version](https://img.shields.io/hexpm/v/imgproxy.svg)](https://hex.pm/packages/imgproxy)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/imgproxy/)
 
 Imgproxy is an Elixir library that helps generate [imgproxy](https://github.com/DarthSim/imgproxy) URLs.  Before using this library, you should have a running imgproxy server.
 
-**Note:** As of version 3.0, OTP >= 22.1 and imgproxy >= 2.0.0 are required.
+**Note:** As of version `3.0`, OTP `>= 22.1` and `imgproxy >= 2.0.0` are required.
 
 ## Installation
 
@@ -35,7 +36,7 @@ config :imgproxy,
 The `prefix` should be the location of the imgproxy server.  `key` and `salt` are only necessary if you are using [URL signatures](https://docs.imgproxy.net/signing_the_url).  To generate the key a key and salt, you can use:
 
 ``` bash
-$> mix imgproxy.gen.secret
+$ mix imgproxy.gen.secret
 ```
 
 You can use the output as your key or salt (ideally, just run the command twice, use the first output for your key and the second output for your salt).
@@ -70,9 +71,16 @@ Imgproxy.new("https://placekitten.com/200/300") |> to_string()
 To run tests:
 
 ``` shell
-$> mix test
+$ mix test
 ```
 
 ## Reporting Issues
 
 Please report all issues [on github](https://github.com/bmuller/imgproxy/issues).
+
+## Copyright and License
+
+Copyright (c) 2019 Brian Muller
+
+This work is free. You can redistribute it and/or modify it under the
+terms of the MIT License. See the [LICENSE.md](./LICENSE.md) file for more details.

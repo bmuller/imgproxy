@@ -41,7 +41,7 @@ defmodule ImgproxyTest do
       result = @img_url |> Imgproxy.new() |> Imgproxy.set_extension("png") |> to_string()
       assert result == "#{@prefix}/insecure/#{@img_url_encoded}.png"
 
-      # now try with an unecessary dot
+      # now try with an unnecessary dot
       result = @img_url |> Imgproxy.new() |> Imgproxy.set_extension(".jpg") |> to_string()
       assert result == "#{@prefix}/insecure/#{@img_url_encoded}.jpg"
     end
