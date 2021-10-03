@@ -11,6 +11,7 @@ defmodule ImgProxy.MixProject do
       version: @version,
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
+      description: "imgproxy URL generator and helper functions",
       deps: deps(),
       package: package(),
       source_url: @source_url,
@@ -46,7 +47,6 @@ defmodule ImgProxy.MixProject do
 
   def package do
     [
-      description: "imgproxy URL generator and helper functions",
       files: ["lib", "mix.exs", "README*", "LICENSE*"],
       maintainers: ["Brian Muller"],
       licenses: ["MIT"],
@@ -67,7 +67,7 @@ defmodule ImgProxy.MixProject do
   defp deps do
     [
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.24.0", only: :dev, runtime: false}
     ]
   end
 end
