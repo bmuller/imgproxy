@@ -67,7 +67,7 @@ defmodule ImgProxy.MixProject do
   defp deps do
     [
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.24.0", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.25", only: :dev, runtime: false}
     ]
   end
 end
