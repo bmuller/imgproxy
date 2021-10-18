@@ -1,8 +1,8 @@
 defmodule ImgProxy.MixProject do
   use Mix.Project
 
-  @version "3.0.0"
   @source_url "https://github.com/bmuller/imgproxy"
+  @version "3.0.0"
 
   def project do
     [
@@ -11,8 +11,8 @@ defmodule ImgProxy.MixProject do
       version: @version,
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
-      deps: deps(),
       description: "imgproxy URL generator and helper functions",
+      deps: deps(),
       package: package(),
       source_url: @source_url,
       docs: docs(),
@@ -22,12 +22,16 @@ defmodule ImgProxy.MixProject do
 
   defp docs do
     [
+      extras: [
+        "CHANGELOG.md": [],
+        "LICENSE.md": [title: "License"],
+        "README.md": [title: "Overview"]
+      ],
       extra_section: "GUIDES",
-      source_ref: "v#{@version}",
-      source_url: @source_url,
       main: "readme",
-      formatters: ["html"],
-      extras: ["README.md"]
+      source_url: @source_url,
+      source_ref: "v#{@version}",
+      formatters: ["html"]
     ]
   end
 
@@ -47,25 +51,23 @@ defmodule ImgProxy.MixProject do
       maintainers: ["Brian Muller"],
       licenses: ["MIT"],
       links: %{
-        "GitHub" => "https://github.com/bmuller/imgproxy",
-        "Changelog" => "https://github.com/bmuller/imgproxy/blob/master/CHANGELOG.md",
+        "Changelog" => "https://hexdocs.pm/imgproxy/changelog.html",
+        "GitHub" => @source_url,
         "imgproxy Site" => "https://imgproxy.net"
       }
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger]
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.25", only: :dev}
+      {:ex_doc, "~> 0.25", only: :dev, runtime: false}
     ]
   end
 end

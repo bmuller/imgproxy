@@ -3,7 +3,7 @@ defmodule Mix.Tasks.Imgproxy.Gen.Secret do
   @moduledoc """
   Generates a secret that could be used as a salt or key and prints it to the terminal.
 
-       mix imgproxy.gen.secret
+      $ mix imgproxy.gen.secret
 
   """
   use Mix.Task
