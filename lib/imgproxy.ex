@@ -153,9 +153,7 @@ defimpl String.Chars, for: Imgproxy do
   end
 
   defp option_to_string({name, args}) when is_list(args) do
-    [name | args]
-    |> Enum.map(&Kernel.to_string/1)
-    |> Enum.join(":")
+    Enum.map_join([name | args], ":", &Kernel.to_string/1)
   end
 
   defp gen_signature(path, key, salt) when is_binary(key) and is_binary(salt) do

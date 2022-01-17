@@ -2,7 +2,7 @@ defmodule ImgProxy.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/bmuller/imgproxy"
-  @version "3.0.0"
+  @version "3.0.1"
 
   def project do
     [
