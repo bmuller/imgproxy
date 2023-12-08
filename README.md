@@ -43,32 +43,32 @@ You can use the output as your key or salt (ideally, just run the command twice,
 
 ## Usage
 
-Usage is simple - first generate an `Imgproxy` struct via `Imgproxy.new/1`, add any options you'd like, then convert to a string.
+Usage is simple - first generate an `Imgproxy.ProcessRequest` struct via `Imgproxy.ProcessRequest.new/1`, add any options you'd like, then convert to a string.
 
 Example:
 
 ```elixir
 # Generate URL for an image, using defaults
-Imgproxy.new("https://placekitten.com/200/300") |> to_string()
+Imgproxy.ProcessRequest.new("https://placekitten.com/200/300") |> to_string()
 
 # Resize to 123x321
 "https://placekitten.com/200/300"
-|> Imgproxy.new()
-|> Imgproxy.resize(123, 321, type: "fill")
+|> Imgproxy.ProcessRequest.new()
+|> Imgproxy.ProcessRequest.resize(123, 321, type: "fill")
 |> to_string()
 
 
 # Crop and return a jpg
 "https://placekitten.com/200/300"
-|> Imgproxy.new()
-|> Imgproxy.crop(100, 100)
-|> Imgproxy.set_extension("jpg")
+|> Imgproxy.ProcessRequest.new()
+|> Imgproxy.ProcessRequest.crop(100, 100)
+|> Imgproxy.ProcessRequest.set_extension("jpg")
 |> to_string()
 
 # Getting info for an image
 "https://placekitten.com/200/300"
-|> Imgproxy.new()
-|> Imgproxy.info()
+|> Imgproxy.InfoRequest.new()
+|> Imgproxy.InfoRequest.info()
 |> to_string()
 ```
 

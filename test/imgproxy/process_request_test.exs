@@ -1,6 +1,9 @@
-defmodule ImgproxyTest do
+defmodule Imgproxy.ProcessRequestTest do
   use ExUnit.Case
-  doctest Imgproxy
+
+  alias Imgproxy.ProcessRequest
+
+  doctest ProcessRequest
 
   @img_url "http://example.com/image.gif"
   @img_url_encoded Base.url_encode64(@img_url, padding: false)
@@ -12,15 +15,15 @@ defmodule ImgproxyTest do
 
   describe "building unsigned urls should" do
     test "support no processing options" do
-      result = @img_url |> Imgproxy.new() |> to_string()
+      result = @img_url |> ProcessRequest.new() |> to_string()
       assert result == "#{@prefix}/insecure/#{@img_url_encoded}"
     end
 
     test "support the resize option with arguments" do
       result =
         @img_url
-        |> Imgproxy.new()
-        |> Imgproxy.resize(123, 456, type: "fill", enlarge: true)
+        |> ProcessRequest.new()
+        |> ProcessRequest.resize(123, 456, type: "fill", enlarge: true)
         |> to_string()
 
       assert result == "#{@prefix}/insecure/rs:fill:123:456:true/#{@img_url_encoded}"
@@ -29,20 +32,24 @@ defmodule ImgproxyTest do
     test "support multiple options" do
       result =
         @img_url
-        |> Imgproxy.new()
-        |> Imgproxy.resize(123, 456, type: "fill", enlarge: true)
-        |> Imgproxy.set_gravity("sm")
+        |> ProcessRequest.new()
+        |> ProcessRequest.resize(123, 456, type: "fill", enlarge: true)
+        |> ProcessRequest.set_gravity("sm")
         |> to_string()
 
       assert result == "#{@prefix}/insecure/g:sm/rs:fill:123:456:true/#{@img_url_encoded}"
     end
 
     test "support setting an extension" do
-      result = @img_url |> Imgproxy.new() |> Imgproxy.set_extension("png") |> to_string()
+      result =
+        @img_url |> ProcessRequest.new() |> ProcessRequest.set_extension("png") |> to_string()
+
       assert result == "#{@prefix}/insecure/#{@img_url_encoded}.png"
 
       # now try with an unnecessary dot
-      result = @img_url |> Imgproxy.new() |> Imgproxy.set_extension(".jpg") |> to_string()
+      result =
+        @img_url |> ProcessRequest.new() |> ProcessRequest.set_extension(".jpg") |> to_string()
+
       assert result == "#{@prefix}/insecure/#{@img_url_encoded}.jpg"
     end
   end
@@ -64,7 +71,7 @@ defmodule ImgproxyTest do
     end
 
     test "support no processing options" do
-      result = @img_url |> Imgproxy.new() |> to_string()
+      result = @img_url |> ProcessRequest.new() |> to_string()
       signature = "F7xXm0-O-JVpBIz5Z9JvBGog19LgvTDT4y8dzIQ9H28"
       assert result == "#{@prefix}/#{signature}/#{@img_url_encoded}"
     end
@@ -72,8 +79,8 @@ defmodule ImgproxyTest do
     test "support the resize option with arguments" do
       result =
         @img_url
-        |> Imgproxy.new()
-        |> Imgproxy.resize(123, 456, type: "fill", enlarge: true)
+        |> ProcessRequest.new()
+        |> ProcessRequest.resize(123, 456, type: "fill", enlarge: true)
         |> to_string()
 
       signature = "o0xH0LYlMU7-2lCm4HqeahdxX0elC4AmnF6H0PKyiio"
@@ -83,26 +90,13 @@ defmodule ImgproxyTest do
     test "support multiple options" do
       result =
         @img_url
-        |> Imgproxy.new()
-        |> Imgproxy.resize(123, 456, type: "fill", enlarge: true)
-        |> Imgproxy.set_gravity("sm")
+        |> ProcessRequest.new()
+        |> ProcessRequest.resize(123, 456, type: "fill", enlarge: true)
+        |> ProcessRequest.set_gravity("sm")
         |> to_string()
 
       signature = "SCMuOeSYIRAA1nxJbuuKXnvRBsW0X50xjhqJz_xSDf4"
       assert result == "#{@prefix}/#{signature}/g:sm/rs:fill:123:456:true/#{@img_url_encoded}"
-    end
-
-    test "support multiple options on info" do
-      result =
-        @img_url
-        |> Imgproxy.new()
-        |> Imgproxy.info(dimensions: true, alpha: [alpha: true, check_transparency: true])
-        |> to_string()
-
-      signature = "kE0lzVluLw2VDLY3KBDfvZzqXkzsurQvuWGz6Ay39ks"
-
-      assert result ==
-               "#{@prefix}/info/#{signature}/alpha:true:true/dimensions:true/#{@img_url_encoded}"
     end
   end
 end
