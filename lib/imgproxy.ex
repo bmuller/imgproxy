@@ -3,12 +3,19 @@ defmodule Imgproxy do
   `Imgproxy` generates urls for use with an [imgproxy](https://imgproxy.net) server.
   """
 
-  defstruct source_url: nil, options: [], extension: nil, prefix: nil, key: nil, salt: nil
+  defstruct source_url: nil,
+            endpoint: "/",
+            options: [],
+            extension: nil,
+            prefix: nil,
+            key: nil,
+            salt: nil
 
   alias __MODULE__
 
   @type t :: %__MODULE__{
           source_url: nil | String.t(),
+          endpoint: String.t(),
           options: keyword(list()),
           extension: nil | String.t(),
           prefix: nil | String.t(),
@@ -27,6 +34,54 @@ defmodule Imgproxy do
   @type resize_opts :: [
           type: String.t(),
           enlarge: boolean()
+        ]
+
+  @typedoc """
+  Provide configuration arguments to an info option.
+
+  Order matters for options values like:
+  - alpha
+  - crop
+  - average
+  - dominant_colors
+  - blurhash
+
+  Some options requires the image to be fully downloaded and processed:
+  - detect_objects
+  - alpha
+  - crop
+  - palette
+  - average
+  - dominant_colors
+  - blurhash
+  """
+  @type info_opts :: [
+          size: boolean(),
+          format: boolean(),
+          dimensions: boolean(),
+          exif: boolean(),
+          iptc: boolean(),
+          xmp: boolean(),
+          video_meta: boolean(),
+          detect_objects: boolean(),
+          colorspace: boolean(),
+          bands: boolean(),
+          sample_format: boolean(),
+          pages_number: boolean(),
+          alpha: [alpha: boolean(), check_transparency: boolean()],
+          crop: [width: non_neg_integer(), height: non_neg_integer(), gravity: String.t()],
+          palette: 2..256,
+          average: [average: boolean(), ignore_transparent: boolean()],
+          dominant_colors: [dominant_colors: boolean(), build_missed: boolean()],
+          blurhash: [x_components: non_neg_integer(), y_components: non_neg_integer()],
+          page: non_neg_integer(),
+          video_thumbnail_second: pos_integer(),
+          video_thumbnail_keyframes: boolean(),
+          cachebuster: boolean(),
+          expires: pos_integer(),
+          preset: String.t(),
+          max_src_resolution: float(),
+          max_src_file_size: non_neg_integer()
         ]
 
   @doc """
@@ -103,6 +158,18 @@ defmodule Imgproxy do
   end
 
   @doc """
+  Fetch and return an image [info](https://docs.imgproxy.net/usage/getting_info).
+
+  Most options are set to `true` by default on imgproxy, except the ones that require the image to be fully downloaded and processed.
+  """
+  def info(img, opts \\ []) do
+    Enum.reduce(opts, %{img | endpoint: "/info"}, fn
+      {k, v}, img when is_list(v) -> add_option(img, k, Keyword.values(v))
+      {k, v}, img -> add_option(img, k, [v])
+    end)
+  end
+
+  @doc """
   Set the file extension (which will produce an image of that type).
 
   For instance, setting the extension to "png" will result in a PNG being created:
@@ -131,10 +198,10 @@ defmodule Imgproxy do
 end
 
 defimpl String.Chars, for: Imgproxy do
-  def to_string(%Imgproxy{prefix: prefix, key: key, salt: salt} = img) do
-    path = build_path(img)
+  def to_string(%Imgproxy{prefix: prefix, endpoint: endpoint, key: key, salt: salt} = img) do
+    path = build_path(img) |> IO.inspect()
     signature = gen_signature(path, key, salt)
-    Path.join([prefix || "", signature, path])
+    Path.join([prefix || "", endpoint, signature, path])
   end
 
   #  @spec build_path(img_url :: String.t(), opts :: image_opts) :: String.t()

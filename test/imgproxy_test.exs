@@ -91,5 +91,18 @@ defmodule ImgproxyTest do
       signature = "SCMuOeSYIRAA1nxJbuuKXnvRBsW0X50xjhqJz_xSDf4"
       assert result == "#{@prefix}/#{signature}/g:sm/rs:fill:123:456:true/#{@img_url_encoded}"
     end
+
+    test "support multiple options on info" do
+      result =
+        @img_url
+        |> Imgproxy.new()
+        |> Imgproxy.info(dimensions: true, alpha: [alpha: true, check_transparency: true])
+        |> to_string()
+
+      signature = "kE0lzVluLw2VDLY3KBDfvZzqXkzsurQvuWGz6Ay39ks"
+
+      assert result ==
+               "#{@prefix}/info/#{signature}/alpha:true:true/dimensions:true/#{@img_url_encoded}"
+    end
   end
 end

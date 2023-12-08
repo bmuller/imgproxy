@@ -64,6 +64,12 @@ Imgproxy.new("https://placekitten.com/200/300") |> to_string()
 |> Imgproxy.crop(100, 100)
 |> Imgproxy.set_extension("jpg")
 |> to_string()
+
+# Getting info for an image
+"https://placekitten.com/200/300"
+|> Imgproxy.new()
+|> Imgproxy.info()
+|> to_string()
 ```
 
 ## Running Tests
