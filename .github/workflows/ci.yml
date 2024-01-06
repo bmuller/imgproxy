@@ -6,15 +6,47 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        otp: [22.2, 23, 24]
-        elixir: [1.9.4, 1.10.4, 1.11.2, 1.12.3]
+        otp: [24, 25, 26]
+        elixir: ['1.15', '1.16']
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: erlef/setup-beam@v1
         with:
           elixir-version: ${{matrix.elixir}}
           otp-version: ${{matrix.otp}}
-      - run: mix deps.get
+      - uses: actions/cache@v3
+        id: mix-cache # id to use in retrieve action
+        with:
+          path: |
+            _build
+            deps
+          key: test-cache-v0-${{matrix.elixir}}-${{matrix.otp}}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+      - if: steps.mix-cache.outputs.cache-hit != 'true'
+        run: mix do deps.get, deps.compile
       - run: mix credo
-      - run: mix format --check-formatted      
+      - run: mix format --check-formatted
       - run: mix test
+
+  dialyzer:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        otp: [26]
+        elixir: ['1.16']
+    steps:
+      - uses: actions/checkout@v3
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{matrix.elixir}}
+          otp-version: ${{matrix.otp}}
+      - uses: actions/cache@v3
+        id: mix-cache # id to use in retrieve action
+        with:
+          path: |
+            _build
+            deps
+            priv/plts
+          key: dialyzer-cache-v0-${{matrix.elixir}}-${{matrix.otp}}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+      - if: steps.mix-cache.outputs.cache-hit != 'true'
+        run: mix do deps.get, deps.compile
+      - run: mix dialyzer
