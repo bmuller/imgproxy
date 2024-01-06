@@ -16,7 +16,8 @@ defmodule ImgProxy.MixProject do
       package: package(),
       source_url: @source_url,
       docs: docs(),
-      preferred_cli_env: [test: :test, "ci.test": :test]
+      preferred_cli_env: [test: :test, "ci.test": :test],
+      dialyzer: [plt_add_apps: [:mix]]
     ]
   end
 
@@ -67,7 +68,8 @@ defmodule ImgProxy.MixProject do
   defp deps do
     [
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.25", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.25", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.2", only: :dev, runtime: false}
     ]
   end
 end
