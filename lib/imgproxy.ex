@@ -3,7 +3,13 @@ defmodule Imgproxy do
   `Imgproxy` generates urls for use with an [imgproxy](https://imgproxy.net) server.
   """
 
-  defstruct source_url: nil, options: [], extension: nil, prefix: nil, key: nil, salt: nil
+  defstruct source_url: nil,
+            options: [],
+            extension: nil,
+            prefix: nil,
+            key: nil,
+            salt: nil,
+            endpoint: "/"
 
   alias __MODULE__
 
@@ -13,7 +19,8 @@ defmodule Imgproxy do
           extension: nil | String.t(),
           prefix: nil | String.t(),
           key: nil | String.t(),
-          salt: nil | String.t()
+          salt: nil | String.t(),
+          endpoint: String.t()
         }
 
   @typedoc """
@@ -40,6 +47,15 @@ defmodule Imgproxy do
       key: Application.get_env(:imgproxy, :key),
       salt: Application.get_env(:imgproxy, :salt)
     }
+  end
+
+  @doc """
+  Generate a new `t:Imgproxy.t/0` struct for the given image source URL to fetch the
+  [Info Endpoint](https://docs.imgproxy.net/usage/getting_info).
+  """
+  @spec info_new(String.t()) :: t()
+  def info_new(source_url) when is_binary(source_url) do
+    %{new(source_url) | endpoint: "/info"}
   end
 
   @doc """
@@ -131,10 +147,10 @@ defmodule Imgproxy do
 end
 
 defimpl String.Chars, for: Imgproxy do
-  def to_string(%Imgproxy{prefix: prefix, key: key, salt: salt} = img) do
+  def to_string(%Imgproxy{prefix: prefix, key: key, salt: salt, endpoint: endpoint} = img) do
     path = build_path(img)
     signature = gen_signature(path, key, salt)
-    Path.join([prefix || "", signature, path])
+    Path.join([prefix || "", endpoint, signature, path])
   end
 
   #  @spec build_path(img_url :: String.t(), opts :: image_opts) :: String.t()
