@@ -53,7 +53,7 @@ defmodule Imgproxy do
   Generate a new `t:Imgproxy.t/0` struct for the given image source URL to fetch the
   [Info Endpoint](https://docs.imgproxy.net/usage/getting_info).
   """
-  @spec new(String.t()) :: t()
+  @spec info_new(String.t()) :: t()
   def info_new(source_url) when is_binary(source_url) do
     %{new(source_url) | endpoint: "/info"}
   end
