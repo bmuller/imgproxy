@@ -15,7 +15,7 @@ To install Imgproxy, just add an entry to your `mix.exs`:
 ``` elixir
 def deps do
   [
-    {:imgproxy, "~> 3.0"}
+    {:imgproxy, "~> 3.1"}
   ]
 end
 ```

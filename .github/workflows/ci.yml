@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         include:
-           - pair:
+          - pair:
               otp: 28.x
               elixir: 1.18.x
           - pair:
