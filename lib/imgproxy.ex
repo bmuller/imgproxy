@@ -72,7 +72,7 @@ defmodule Imgproxy do
   @spec add_option(t(), atom(), list()) :: t()
   def add_option(%Imgproxy{options: opts} = img, name, args)
       when is_atom(name) and is_list(args) do
-    %Imgproxy{img | options: Keyword.put(opts, name, args)}
+    %{img | options: Keyword.put(opts, name, args)}
   end
 
   @doc """
@@ -131,7 +131,7 @@ defmodule Imgproxy do
   @spec set_extension(t(), String.t()) :: t()
   def set_extension(img, "." <> extension), do: set_extension(img, extension)
 
-  def set_extension(img, extension), do: %Imgproxy{img | extension: extension}
+  def set_extension(img, extension), do: %{img | extension: extension}
 
   @doc """
   Generate an imgproxy URL.

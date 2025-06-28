@@ -2,23 +2,26 @@ defmodule ImgProxy.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/bmuller/imgproxy"
-  @version "3.0.2"
+  @version "3.1.0"
 
   def project do
     [
       app: :imgproxy,
       aliases: aliases(),
       version: @version,
-      elixir: "~> 1.8",
+      elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       description: "imgproxy URL generator and helper functions",
       deps: deps(),
       package: package(),
       source_url: @source_url,
       docs: docs(),
-      preferred_cli_env: [test: :test, "ci.test": :test],
       dialyzer: [plt_add_apps: [:mix]]
     ]
+  end
+
+  def cli do
+    [preferred_envs: [test: :test, "ci.test": :test]]
   end
 
   defp docs do
@@ -67,9 +70,9 @@ defmodule ImgProxy.MixProject do
 
   defp deps do
     [
-      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.25", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.2", only: :dev, runtime: false}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.28", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.4", only: :dev, runtime: false}
     ]
   end
 end
