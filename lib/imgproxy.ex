@@ -157,6 +157,12 @@ defmodule Imgproxy do
       ...> |> Imgproxy.set_source_url_encoding(:plain)
       ...> |> to_string()
       "https://imgcdn.example.com/insecure/plain/https://placekitten.com/200/300@png"
+
+      iex> "https://placekitten.com/200/300"
+      ...> |> Imgproxy.new()
+      ...> |> Imgproxy.set_source_url_encoding(:unknown)
+      ** (FunctionClauseError) no function clause matching in Imgproxy.set_source_url_encoding/2
+
   """
 
   @spec set_source_url_encoding(t(), source_url_encoding()) :: t()
