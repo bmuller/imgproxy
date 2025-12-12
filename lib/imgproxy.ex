@@ -184,7 +184,6 @@ defimpl String.Chars, for: Imgproxy do
     Path.join([prefix || "", endpoint, signature, path])
   end
 
-  #  @spec build_path(img_url :: String.t(), opts :: image_opts) :: String.t()
   defp build_path(%Imgproxy{options: opts} = img) do
     ["/" | Enum.map(opts, &option_to_string/1)]
     |> Path.join()
