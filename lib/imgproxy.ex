@@ -9,9 +9,13 @@ defmodule Imgproxy do
             prefix: nil,
             key: nil,
             salt: nil,
-            endpoint: "/"
+            endpoint: "/",
+            source_url_encoding: :base64
 
   alias __MODULE__
+
+  @source_url_encodings [:plain, :base64]
+  @type source_url_encoding :: :plain | :base64
 
   @type t :: %__MODULE__{
           source_url: nil | String.t(),
@@ -20,7 +24,8 @@ defmodule Imgproxy do
           prefix: nil | String.t(),
           key: nil | String.t(),
           salt: nil | String.t(),
-          endpoint: String.t()
+          endpoint: String.t(),
+          source_url_encoding: source_url_encoding()
         }
 
   @typedoc """
@@ -134,6 +139,38 @@ defmodule Imgproxy do
   def set_extension(img, extension), do: %{img | extension: extension}
 
   @doc """
+  Set [the source URL encoding](https://docs.imgproxy.net/usage/processing#source-url) - the default is `:base64`.
+
+  When the encoding is set to `:plain`, the source URL is prepended with `plain/`,
+  the characters `%`, `?`, and `@` are percent-encoded
+  and any file extension is added using `@extension` syntax.
+
+  ## Examples
+
+      iex> img = Imgproxy.new("https://placekitten.com/200/300?code=%@")
+      iex> Imgproxy.set_source_url_encoding(img, :plain) |> to_string()
+      "https://imgcdn.example.com/insecure/plain/https://placekitten.com/200/300%3Fcode=%25%40"
+
+      iex> "https://placekitten.com/200/300"
+      ...> |> Imgproxy.new()
+      ...> |> Imgproxy.set_extension("png")
+      ...> |> Imgproxy.set_source_url_encoding(:plain)
+      ...> |> to_string()
+      "https://imgcdn.example.com/insecure/plain/https://placekitten.com/200/300@png"
+
+      iex> "https://placekitten.com/200/300"
+      ...> |> Imgproxy.new()
+      ...> |> Imgproxy.set_source_url_encoding(:unknown)
+      ** (FunctionClauseError) no function clause matching in Imgproxy.set_source_url_encoding/2
+
+  """
+
+  @spec set_source_url_encoding(t(), source_url_encoding()) :: t()
+  def set_source_url_encoding(img, encoding) when encoding in @source_url_encodings do
+    %{img | source_url_encoding: encoding}
+  end
+
+  @doc """
   Generate an imgproxy URL.
 
   ## Example
@@ -153,19 +190,38 @@ defimpl String.Chars, for: Imgproxy do
     Path.join([prefix || "", endpoint, signature, path])
   end
 
-  #  @spec build_path(img_url :: String.t(), opts :: image_opts) :: String.t()
-  defp build_path(%Imgproxy{source_url: source_url, options: opts, extension: ext}) do
+  defp build_path(%Imgproxy{options: opts} = img) do
     ["/" | Enum.map(opts, &option_to_string/1)]
     |> Path.join()
-    |> Path.join(encode_source_url(source_url, ext))
+    |> Path.join(prepare_source_url(img))
   end
 
-  defp encode_source_url(source_url, nil) do
+  defp prepare_source_url(img) do
+    img.source_url
+    |> optionally_encode_source_url(img)
+    |> optionally_add_extension(img)
+  end
+
+  defp optionally_encode_source_url(source_url, %Imgproxy{source_url_encoding: :base64}) do
     Base.url_encode64(source_url, padding: false)
   end
 
-  defp encode_source_url(source_url, extension) do
-    encode_source_url(source_url, nil) <> "." <> extension
+  @plain_source_url_blacklist ~c"%?@"
+  defp optionally_encode_source_url(source_url, _img) do
+    encoded = URI.encode(source_url, &(&1 not in @plain_source_url_blacklist))
+    Path.join("plain", encoded)
+  end
+
+  defp optionally_add_extension(source_url, %Imgproxy{extension: nil}) do
+    source_url
+  end
+
+  defp optionally_add_extension(source_url, %Imgproxy{source_url_encoding: :plain} = img) do
+    source_url <> "@" <> img.extension
+  end
+
+  defp optionally_add_extension(source_url, %Imgproxy{extension: extension}) do
+    source_url <> "." <> extension
   end
 
   defp option_to_string({name, args}) when is_list(args) do
