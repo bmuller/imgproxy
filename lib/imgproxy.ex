@@ -141,14 +141,15 @@ defmodule Imgproxy do
   @doc """
   Set [the source URL encoding](https://docs.imgproxy.net/usage/processing#source-url) - the default is `:base64`.
 
-  When the encoding is set to `:plain`, the source URL is prepended with `plain/`
+  When the encoding is set to `:plain`, the source URL is prepended with `plain/`,
+  the characters `%`, `?`, and `@` are percent-encoded
   and any file extension is added using `@extension` syntax.
 
   ## Examples
 
-      iex> img = Imgproxy.new("https://placekitten.com/200/300")
+      iex> img = Imgproxy.new("https://placekitten.com/200/300?code=%@")
       iex> Imgproxy.set_source_url_encoding(img, :plain) |> to_string()
-      "https://imgcdn.example.com/insecure/plain/https://placekitten.com/200/300"
+      "https://imgcdn.example.com/insecure/plain/https://placekitten.com/200/300%3Fcode=%25%40"
 
       iex> "https://placekitten.com/200/300"
       ...> |> Imgproxy.new()
@@ -200,8 +201,10 @@ defimpl String.Chars, for: Imgproxy do
     Base.url_encode64(source_url, padding: false)
   end
 
+  @plain_source_url_blacklist ~c"%?@"
   defp optionally_encode_source_url(source_url, _img) do
-    Path.join("plain", source_url)
+    encoded = URI.encode(source_url, &(&1 not in @plain_source_url_blacklist))
+    Path.join("plain", encoded)
   end
 
   defp optionally_add_extension(source_url, %Imgproxy{extension: nil}) do
